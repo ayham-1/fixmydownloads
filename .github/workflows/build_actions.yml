@@ -37,5 +37,19 @@ jobs:
     - name: Upload artifact
       uses: actions/upload-artifact@v1.0.0
       with:
-        name: Installers Folder
+        name: Debuggable Installers Folder
+        path: artifacts/
+      
+ build-docker-release:
+    runs-on: ubuntu-latest    
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build Releasable Installers
+      run: |
+        ./buildDockerRelease.sh
+        ./buildArtifacts.sh
+    - name: Upload artifact
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: Releasable Installers Folder
         path: artifacts/
