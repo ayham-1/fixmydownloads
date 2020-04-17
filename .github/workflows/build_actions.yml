@@ -1,0 +1,41 @@
+name: CI
+on: push
+
+jobs:
+  build-debug:
+    runs-on: ubuntu-latest    
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build Generic Debuggable Linux Binary
+      run: ./build.sh
+    - name: Upload artifact
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: Debug Artifact
+        path: bin/fixmysdl
+
+  build-release:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build Generic Releasable Linux Binary
+      run: ./buildRelease.sh
+    - name: Upload artifact
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: Release Artifact
+        path: bin/fixmysdl
+
+  build-docker-debug:
+    runs-on: ubuntu-latest    
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build Debuggable Installers
+      run: |
+        ./buildDocker.sh
+        ./buildArtifacts.sh
+    - name: Upload artifact
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: Installers Folder
+        path: artifacts/
