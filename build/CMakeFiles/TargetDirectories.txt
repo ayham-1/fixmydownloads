@@ -1,9 +1,0 @@
-/home/akham/proj/fixmydownloads/build/CMakeFiles/install/strip.dir
-/home/akham/proj/fixmydownloads/build/CMakeFiles/install/local.dir
-/home/akham/proj/fixmydownloads/build/CMakeFiles/package_source.dir
-/home/akham/proj/fixmydownloads/build/CMakeFiles/install.dir
-/home/akham/proj/fixmydownloads/build/CMakeFiles/list_install_components.dir
-/home/akham/proj/fixmydownloads/build/CMakeFiles/rebuild_cache.dir
-/home/akham/proj/fixmydownloads/build/CMakeFiles/package.dir
-/home/akham/proj/fixmydownloads/build/CMakeFiles/edit_cache.dir
-/home/akham/proj/fixmydownloads/build/CMakeFiles/fixmydl.dir

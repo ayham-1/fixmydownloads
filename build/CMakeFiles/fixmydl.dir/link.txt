@@ -1,1 +1,0 @@
-/usr/bin/cc -g -g -Wall -Werror -Wno-unused-function   CMakeFiles/fixmydl.dir/src/main.c.o  -o ../bin/fixmydl 

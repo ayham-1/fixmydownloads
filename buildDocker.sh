@@ -2,4 +2,4 @@
 
 ./clean.sh
 docker build --tag fixmydlsbuilder .
-docker run -v $(pwd):/fixmydownloads -it fixmydlsbuilder
+docker run -v $(pwd):/fixmydownloads fixmydlsbuilder Debug
