@@ -5,9 +5,6 @@ project("fixmydownloads" VERSION 0.0.1)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake" ${CMAKE_MODULE_PATH})
 
-# enable code coverage
-find_package(codecov)
-
 # Set C compiler options
 set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -g -Wall -Werror -Wno-unused-function")
 set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -O3 -Wall -Werror -Wno-unused-function")
@@ -16,7 +13,6 @@ set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -O3 -Wall -Werror -Wno-unuse
 add_library(coverage_config INTERFACE)
 
 add_executable(fixmydl src/main.c)
-add_coverage(fixmydl)
 
 install(TARGETS fixmydl 
   RUNTIME DESTINATION bin
@@ -33,4 +29,3 @@ SET(CPACK_GENERATOR "DEB;RPM;TGZ;STGZ;TBZ2;TZ;ZIP")
 
 include(CPack)
 
-coverage_evaluate()
