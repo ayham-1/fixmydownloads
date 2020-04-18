@@ -1,7 +1,7 @@
 ![CI](https://github.com/realaltffour/fixmydownloads/workflows/CI/badge.svg?branch=master&event=push) 
 # fixmydownloads
 </br>
-The goal of the project is to make the simplest downloads folder organizer that is configured by code, making it so small that the whole thing fits in one file!
+The goal of the project is to make the simplest downloads folder organizer that is configured by code(defaults are more than enough), making it so small that the whole thing fits in one file!
 
 ## Installation
 Their are multiple ways you can install it. Grab your distro's package from the release section and install it! Or wait for the project to get into your distro repositories (hopefully).
