@@ -5,14 +5,20 @@ project("fixmydownloads" VERSION 0.0.1)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake" ${CMAKE_MODULE_PATH})
 
+if (CMAKE_COMPILER_IS_GNUCC)
+	option(ENABLE_COVERAGE "Enable coverage reporting" FALSE)
+
+	if (ENABLE_COVERAGE)
+		add_compile_options(--coverage -O0)
+	endif()
+endif()
+
 # Set C compiler options
 set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -g -Wall -Werror -Wno-unused-function")
 set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -O3 -Wall -Werror -Wno-unused-function")
 
-# Code Coverage Configuration
-add_library(coverage_config INTERFACE)
-
 add_executable(fixmydl src/main.c)
+target_link_libraries(fixmydl --coverage)
 
 install(TARGETS fixmydl 
   RUNTIME DESTINATION bin

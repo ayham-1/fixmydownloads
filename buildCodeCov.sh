@@ -2,7 +2,6 @@
 
 mkdir -p build && cd build
 
-cmake -DCMAKE_BUILD_TYPE=Release -DENABLE_COVERAGE=On ..
-make gcov
-make lcov
+cmake -DENABLE_COVERAGE:BOOL=TRUE ..
+make -j$(nproc)
 cd ..
