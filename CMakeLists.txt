@@ -5,20 +5,28 @@ project("fixmydownloads" VERSION 0.0.1)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake" ${CMAKE_MODULE_PATH})
 
-if (CMAKE_COMPILER_IS_GNUCC)
-	option(ENABLE_COVERAGE "Enable coverage reporting" FALSE)
+# Code Coverage Configuration
+add_library(coverage_config INTERFACE)
 
-	if (ENABLE_COVERAGE)
-		add_compile_options(--coverage -O0 -fprofile-arcs -ftest-coverage)
-	endif()
-endif()
+option(CODE_COVERAGE "Enable coverage reporting" OFF)
+if(CODE_COVERAGE)
+  # Add required flags (GCC & LLVM/Clang)
+  target_compile_options(coverage_config INTERFACE
+    -O0        # no optimization
+    -g         # generate debug info
+    --coverage # sets all required flags
+  )
+  if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.13)
+    target_link_options(coverage_config INTERFACE --coverage)
+  else()
+    target_link_libraries(coverage_config INTERFACE --coverage)
+  endif()
+endif(CODE_COVERAGE)
 
-# Set C compiler options
-set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -g -Wall -Werror -Wno-unused-function")
-set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -O3 -Wall -Werror -Wno-unused-function")
+add_subdirectory(src)
 
-add_executable(fixmydl src/main.c)
-target_link_libraries(fixmydl --coverage)
+enable_testing()
+add_subdirectory(tests)
 
 install(TARGETS fixmydl 
   RUNTIME DESTINATION bin

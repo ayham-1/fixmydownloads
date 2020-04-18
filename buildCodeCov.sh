@@ -2,6 +2,6 @@
 
 mkdir -p build && cd build
 
-cmake -DENABLE_COVERAGE:BOOL=TRUE ..
+cmake -DCODE_COVERAGE:BOOL=TRUE ..
 make -j$(nproc)
 cd ..
