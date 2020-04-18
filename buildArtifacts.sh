@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 mkdir artifacts
 cd $1

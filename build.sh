@@ -3,5 +3,5 @@
 mkdir build
 cd build
 cmake -DCMAKE_BUILD_TYPE=Debug ..
-make -j5
+make -j$(nproc)
 cd ..

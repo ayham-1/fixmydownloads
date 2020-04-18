@@ -5,8 +5,8 @@
 [ $1 == "Debug" ] && cd build
 [ $1 == "Release" ] && cd buildRelease 
 
-make -j5 package
-make -j5 install
+make -j$(nproc) package
+make -j$(nproc) install
 cd ..
 
 [ $1 == "Debug" ] && chmod -R 777 build bin

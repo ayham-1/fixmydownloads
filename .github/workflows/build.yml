@@ -37,7 +37,7 @@ jobs:
     - name: Upload artifact
       uses: actions/upload-artifact@v1.0.0
       with:
-        name: Debuggable Installers Folder
+        name: Debuggable Installers
         path: artifacts/
       
   build-docker-release:
@@ -51,5 +51,5 @@ jobs:
     - name: Upload artifact
       uses: actions/upload-artifact@v1.0.0
       with:
-        name: Releasable Installers Folder
+        name: Releasable Installers
         path: artifacts/
