@@ -8,7 +8,6 @@
 make -j5 package
 make -j5 install
 cd ..
+
 [ $1 == "Debug" ] && chmod -R 777 build bin
 [ $1 == "Release" ] && chmod -R 777 buildRelease bin 
-
-

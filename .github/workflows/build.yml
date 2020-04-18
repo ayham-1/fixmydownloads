@@ -33,7 +33,7 @@ jobs:
     - name: Build Debuggable Installers
       run: |
         ./buildDocker.sh
-        ./buildArtifacts.sh
+        ./buildArtifacts.sh build
     - name: Upload artifact
       uses: actions/upload-artifact@v1.0.0
       with:
@@ -47,7 +47,7 @@ jobs:
     - name: Build Releasable Installers
       run: |
         ./buildDockerRelease.sh
-        ./buildArtifacts.sh
+        ./buildArtifacts.sh buildRelease
     - name: Upload artifact
       uses: actions/upload-artifact@v1.0.0
       with:
