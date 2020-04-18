@@ -61,7 +61,3 @@ jobs:
       run: |
           ./buildCodeCov.sh
           bash <(curl -s https://codecov.io/bash) -X gcov -t ${{ secrets.CODECOV_TOKEN }}
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        name: codecov-umbrella
-        fail_ci_if_error: true
