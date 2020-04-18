@@ -1,5 +1,5 @@
-# fixmydownloads
 ![CI](https://github.com/realaltffour/fixmydownloads/workflows/CI/badge.svg?branch=master&event=push) 
+# fixmydownloads
 </br>
 The goal of the project is to make the simplest downloads folder organizer that is configured by code, making it so small that the whole thing fits in one file!
 
