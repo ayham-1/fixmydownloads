@@ -58,9 +58,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Codecov
-      uses: codecov/codecov-action@v1.0.6
       run: |
           ./buildCodeCov.sh
+          bash <(curl -s https://codecov.io/bash) -X gcov -t ${{ secrets.CODECOV_TOKEN }}
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         name: codecov-umbrella
