@@ -26,6 +26,7 @@ int main()
 	xdg_cmd = popen("/bin/bash xdg-user-dir", "r");
 	if (!xdg_cmd) {
 		/* Default Download folder */
+	defaultDownloads:;
 		char *home_dir = getenv("HOME");
 		if (!home_dir) {
 			struct passwd *pw = getpwuid(getuid());
@@ -40,7 +41,9 @@ int main()
 		strcat(downloads_dir, downloads_dir_default);
 	} else {
 		/* Read path from output of xdg */
-		fgets(downloads_dir, 4096, xdg_cmd);
+		if (!fgets(downloads_dir, 4096, xdg_cmd))
+			goto defaultDownloads;
+
 		fclose(xdg_cmd);
 	}
 
