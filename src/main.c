@@ -8,62 +8,60 @@
 
 #define EVENT_SIZE (sizeof(struct inotify_event))
 #define EVENT_BUF_LEN (1024 * (EVENT_SIZE + 16))
+#define WATCHLIST_SIZE 4096
+
+static int inotify_instance = -1;
+static char event_buffer[EVENT_BUF_LEN];
+static int watch_list[WATCHLIST_SIZE];
 
 int main()
 {
-	int length, i = 0;
-	int fd;
-	int wd;
-	char buffer[EVENT_BUF_LEN];
+	/* Initialize inotify instance */
+	inotify_instance = inotify_init();
+	if (inotify_instance < 0)
+		perror("Failed initializing inotify library!");
 
-	/*creating the INOTIFY instance*/
-	fd = inotify_init();
+	/* Add wanted Downloads to watch lists (Recursive) */
+	watch_list[0] =
+		inotify_add_watch(inotify_instance, ".", IN_CREATE | IN_DELETE);
+	if (!watch_list[0])
+		perror("Failed to add . to watchlist!");
 
-	/*checking for error*/
-	if (fd < 0) {
-		perror("inotify_init");
-	}
+	while (1) {
+		/* Get events*/
+		int length =
+			read(inotify_instance, event_buffer, EVENT_BUF_LEN);
+		if (length < 0)
+			perror("Failed to read inotify buffer!");
 
-	/*adding the “/tmp” directory into watch list. Here, the suggestion is to validate the existence of the directory before adding into monitoring list.*/
-	wd = inotify_add_watch(fd, "/tmp", IN_CREATE | IN_DELETE);
-
-	/*read to determine the event change happens on “/tmp” directory. Actually this read blocks until the change event occurs*/
-
-	length = read(fd, buffer, EVENT_BUF_LEN);
-
-	/*checking for error*/
-	if (length < 0) {
-		perror("read");
-	}
-
-	/*actually read return the list of change events happens. Here, read the change event one by one and process it accordingly.*/
-	while (i < length) {
-		struct inotify_event *event =
-			(struct inotify_event *)&buffer[i];
-		if (event->len) {
-			if (event->mask & IN_CREATE) {
-				if (event->mask & IN_ISDIR) {
-					printf("New directory %s created.\n",
-					       event->name);
-				} else {
-					printf("New file %s created.\n",
-					       event->name);
-				}
-			} else if (event->mask & IN_DELETE) {
-				if (event->mask & IN_ISDIR) {
-					printf("Directory %s deleted.\n",
-					       event->name);
-				} else {
-					printf("File %s deleted.\n",
-					       event->name);
+		/* Process events */
+		int i = 0;
+		while (i < length) {
+			struct inotify_event *event =
+				(struct inotify_event *)&event_buffer[i];
+			if (event->len) {
+				if (event->mask & IN_CREATE) {
+					if (event->mask & IN_ISDIR) {
+						printf("New directory %s created.\n",
+						       event->name);
+					} else {
+						printf("New file %s created.\n",
+						       event->name);
+					}
+				} else if (event->mask & IN_DELETE) {
+					if (event->mask & IN_ISDIR) {
+						printf("Directory %s deleted.\n",
+						       event->name);
+					} else {
+						printf("File %s deleted.\n",
+						       event->name);
+					}
+					//inotify_rm_watch(inotify_instance, wd);
 				}
 			}
+			i += EVENT_SIZE + event->len;
 		}
-		i += EVENT_SIZE + event->len;
 	}
-	/*removing the “/tmp” directory from the watch list.*/
-	inotify_rm_watch(fd, wd);
 
-	/*closing the INOTIFY instance*/
-	close(fd);
+	close(inotify_instance);
 }
