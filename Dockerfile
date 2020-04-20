@@ -8,9 +8,10 @@ RUN zypper -n install gcc
 RUN zypper -n install gcc-c++
 RUN zypper -n install dpkg
 RUN zypper -n install rpm-build
+RUN zypper -n install inotify-tools
+RUN zypper -n install inotify-tools-devel
 
 COPY . fixmydownloads
-
 WORKDIR fixmydownloads
 
-ENTRYPOINT [ "/fixmydownloads/docker-entrypoint.sh" ]
+ENTRYPOINT [ "/fixmydownloads/scripts/docker-entrypoint.sh" ]
