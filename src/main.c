@@ -13,7 +13,7 @@
 #define WATCHLIST_SIZE 4096
 
 static const char downloads_dir_default[] = "Downloads";
-static char downloads_dir[2048];
+static char downloads_dir[4096];
 
 static int inotify_instance = -1;
 static char event_buffer[EVENT_BUF_LEN];
