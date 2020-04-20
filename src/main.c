@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <errno.h>
+#include <pwd.h>
+#include <string.h>
 #include <sys/types.h>
 #include <sys/inotify.h>
 
@@ -10,15 +12,41 @@
 #define EVENT_BUF_LEN (1024 * (EVENT_SIZE + 16))
 #define WATCHLIST_SIZE 4096
 
+static const char downloads_dir_default[] = "Downloads";
+static char downloads_dir[2048];
+
 static int inotify_instance = -1;
 static char event_buffer[EVENT_BUF_LEN];
 static int watch_list[WATCHLIST_SIZE];
 
 int main()
 {
+	/* Get downloads directory. */
+	FILE *xdg_cmd = NULL;
+	xdg_cmd = popen("/bin/bash xdg-user-dir", "r");
+	if (!xdg_cmd) {
+		/* Default Download folder */
+		char *home_dir = getenv("HOME");
+		if (!home_dir) {
+			struct passwd *pw = getpwuid(getuid());
+			if (!pw)
+				perror("Failed to get home directory!");
+			home_dir = pw->pw_dir;
+			if (!home_dir)
+				perror("Failed miserably to get downloads directory!");
+		}
+		strcat(downloads_dir, home_dir);
+		strcat(downloads_dir, "/");
+		strcat(downloads_dir, downloads_dir_default);
+	} else {
+		/* Read path from output of xdg */
+		fgets(downloads_dir, 4096, xdg_cmd);
+		fclose(xdg_cmd);
+	}
+
 	/* Initialize inotify instance */
 	inotify_instance = inotify_init();
-	if (inotify_instance < 0)
+	if (!inotify_instance)
 		perror("Failed initializing inotify library!");
 
 	/* Add wanted Downloads to watch lists (Recursive) */
@@ -31,7 +59,7 @@ int main()
 		/* Get events*/
 		int length =
 			read(inotify_instance, event_buffer, EVENT_BUF_LEN);
-		if (length < 0)
+		if (!length)
 			perror("Failed to read inotify buffer!");
 
 		/* Process events */
