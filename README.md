@@ -47,4 +47,4 @@ This section is not complete, so is the application. But the main idea is to hav
 This project is licensed under the GPLv3 License - see the [LICENSE.md](LICENSE.md) file for details.
 
 ## Inspiring
-I never found a downloads folder organizer that is so simple that you just install it and forget about it. Adding, I wanted to a project that would be (suckless-compatible)[https://suckless.org/] (if that exists). It's worthy to note that I made a 5-minute research 'session' about download organizer for Linux and didn't find any. Therefore I called this project the simplest.
+I never found a downloads folder organizer that is so simple that you just install it and forget about it. Adding, I wanted to a project that would be [suckless-compatible](https://suckless.org/) (if that exists). It's worthy to note that I made a 5-minute research 'session' about download organizer for Linux and didn't find any. Therefore I called this project the simplest.
