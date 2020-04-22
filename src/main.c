@@ -10,20 +10,19 @@
 
 #define EVENT_SIZE (sizeof(struct inotify_event))
 #define EVENT_BUF_LEN (1024 * (EVENT_SIZE + 16))
-#define WATCHLIST_SIZE 4096
 
 static const char downloads_dir_default[] = "Downloads";
 static char downloads_dir[4096];
 
 static int inotify_instance = -1;
 static char event_buffer[EVENT_BUF_LEN];
-static int watch_list[WATCHLIST_SIZE];
+static int watch_list;
 
 int main()
 {
 	/* Get downloads directory. */
 	FILE *xdg_cmd = NULL;
-	xdg_cmd = popen("/bin/bash xdg-user-dir", "r");
+	xdg_cmd = popen("xdg-user-dir DOWNLOAD", "r");
 	if (!xdg_cmd) {
 		/* Default Download folder */
 	defaultDownloads:;
@@ -44,7 +43,7 @@ int main()
 		if (!fgets(downloads_dir, 4096, xdg_cmd))
 			goto defaultDownloads;
 
-		fclose(xdg_cmd);
+		pclose(xdg_cmd);
 	}
 
 	/* Initialize inotify instance */
@@ -52,11 +51,11 @@ int main()
 	if (!inotify_instance)
 		perror("Failed initializing inotify library!");
 
-	/* Add wanted Downloads to watch lists (Recursive) */
-	watch_list[0] =
-		inotify_add_watch(inotify_instance, ".", IN_CREATE | IN_DELETE);
-	if (!watch_list[0])
-		perror("Failed to add . to watchlist!");
+	/* Add wanted Downloads to watchlist  */
+	watch_list = inotify_add_watch(inotify_instance, downloads_dir,
+				       IN_CREATE | IN_DELETE);
+	if (!watch_list)
+		perror("Failed to add downloads folder to watchlist!");
 
 	while (1) {
 		/* Get events*/
