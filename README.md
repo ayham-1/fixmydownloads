@@ -12,7 +12,7 @@ Using docker is the recommended way, make sure you have the correct permissions 
 ```shell
 $ ./buildDocker.sh (For debbuggable binary and installers)
 $ ./buildDockerRelease.sh (For releasable binary and installers)
-$ ./buildArtifacts.sh (For extracting installers into $(PROJECT)/artifacts
+$ ./buildArtifacts.sh (For extracting installers into $(PROJECT)/artifacts)
 ```
 
 In Linux with a ready ```C``` development environment, run:
