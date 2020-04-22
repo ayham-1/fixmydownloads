@@ -25,7 +25,6 @@ int main()
 	xdg_cmd = popen("xdg-user-dir DOWNLOAD", "r");
 	if (!xdg_cmd) {
 		/* Default Download folder */
-	defaultDownloads:;
 		char *home_dir = getenv("HOME");
 		if (!home_dir) {
 			struct passwd *pw = getpwuid(getuid());
@@ -40,8 +39,14 @@ int main()
 		strcat(downloads_dir, downloads_dir_default);
 	} else {
 		/* Read path from output of xdg */
-		if (!fgets(downloads_dir, 4096, xdg_cmd))
-			goto defaultDownloads;
+		int c, n = 0;
+		while ((c = fgetc(xdg_cmd)) != EOF) {
+			if (c == '\n')
+				downloads_dir[n++] = '\0';
+			else
+				downloads_dir[n++] = (char)c;
+		}
+		downloads_dir[n] = '\0';
 
 		pclose(xdg_cmd);
 	}
@@ -57,41 +62,38 @@ int main()
 	if (!watch_list)
 		perror("Failed to add downloads folder to watchlist!");
 
-	while (1) {
-		/* Get events*/
-		int length =
-			read(inotify_instance, event_buffer, EVENT_BUF_LEN);
-		if (!length)
-			perror("Failed to read inotify buffer!");
+	/* Get events*/
+	int length = read(inotify_instance, event_buffer, EVENT_BUF_LEN);
+	if (!length)
+		perror("Failed to read inotify buffer!");
 
-		/* Process events */
-		int i = 0;
-		while (i < length) {
-			struct inotify_event *event =
-				(struct inotify_event *)&event_buffer[i];
-			if (event->len) {
-				if (event->mask & IN_CREATE) {
-					if (event->mask & IN_ISDIR) {
-						printf("New directory %s created.\n",
-						       event->name);
-					} else {
-						printf("New file %s created.\n",
-						       event->name);
-					}
-				} else if (event->mask & IN_DELETE) {
-					if (event->mask & IN_ISDIR) {
-						printf("Directory %s deleted.\n",
-						       event->name);
-					} else {
-						printf("File %s deleted.\n",
-						       event->name);
-					}
-					//inotify_rm_watch(inotify_instance, wd);
+	/* Process events */
+	int i = 0;
+	while (i < length) {
+		struct inotify_event *event =
+			(struct inotify_event *)&event_buffer[i];
+		if (event->len) {
+			if (event->mask & IN_CREATE) {
+				if (event->mask & IN_ISDIR) {
+					printf("New directory %s created.\n",
+					       event->name);
+				} else {
+					printf("New file %s created.\n",
+					       event->name);
+				}
+			} else if (event->mask & IN_DELETE) {
+				if (event->mask & IN_ISDIR) {
+					printf("Directory %s deleted.\n",
+					       event->name);
+				} else {
+					printf("File %s deleted.\n",
+					       event->name);
 				}
 			}
-			i += EVENT_SIZE + event->len;
 		}
+		i += EVENT_SIZE + event->len;
 	}
+	inotify_rm_watch(inotify_instance, watch_list);
 
 	close(inotify_instance);
 }
