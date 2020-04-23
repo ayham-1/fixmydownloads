@@ -6,6 +6,7 @@ jobs:
     runs-on: ubuntu-latest    
     steps:
     - uses: actions/checkout@v2
+    - run: git checkout HEAD^
     - name: Build Generic Debuggable Linux Binary
       run: ./build.sh
     - name: Upload artifact
