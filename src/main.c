@@ -21,6 +21,7 @@ static int inotify_instance = -1;
 static char event_buffer[EVENT_BUF_LEN];
 static int watch_list;
 
+char *strrev(char *str);
 char *get_directory(const char *param);
 char *get_extension(const char *name);
 void move(const char *name);
@@ -68,6 +69,37 @@ int main(int argc, char *argv[])
 	close(inotify_instance);
 }
 
+void move(const char *name)
+{
+	/* Get all variables needed */
+	char *ext = get_extension(name);
+
+	char *dest = (char *)malloc(4096 * sizeof(char));
+	sprintf(dest, "%s/%s/%s", documents_dir, ext, name);
+	char *src = (char *)malloc(4096 * sizeof(char));
+	sprintf(src, "%s/%s", downloads_dir, name);
+	char *org = (char *)malloc(4096 * sizeof(char));
+	sprintf(org, "%s/%s/", documents_dir, ext);
+
+	/* Ensure/Create directories for organization */
+	char *cmd = (char *)malloc(8096 * 2.5 * sizeof(char));
+	strcat(cmd, "mkdir --parents ");
+	strcat(cmd, org);
+	if (system(cmd))
+		perror("Failed to ensure/create directories!");
+
+	printf("Moving: %s Extension: %s\n", name, ext);
+	memset(cmd, 0, strlen(cmd));
+	strcat(cmd, "mv ");
+	strcat(cmd, src);
+	strcat(cmd, " ");
+	strcat(cmd, dest);
+	strcat(cmd, "\0");
+	printf("%s\n", cmd);
+	if (system(cmd))
+		perror("Failed to move file!");
+}
+
 char *get_extension(const char *name)
 {
 	char *ext = (char *)malloc(sizeof(char));
@@ -84,12 +116,6 @@ char *get_extension(const char *name)
 		}
 	}
 	return ext;
-}
-
-void move(const char *name)
-{
-	char *ext = get_extension(name);
-	printf("Moving: %s Extension: %s\n", name, ext);
 }
 
 char *get_directory(const char *name)
@@ -129,4 +155,18 @@ char *get_directory(const char *name)
 		pclose(xdg_cmd);
 	}
 	return result;
+}
+
+char *strrev(char *str)
+{
+	char *p1, *p2;
+
+	if (!str || !*str)
+		return str;
+	for (p1 = str, p2 = str + strlen(str) - 1; p2 > p1; ++p1, --p2) {
+		*p1 ^= *p2;
+		*p2 ^= *p1;
+		*p1 ^= *p2;
+	}
+	return str;
 }
