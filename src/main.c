@@ -29,7 +29,6 @@ static int watch_list;
 char *strrev(char *str);
 char *get_directory(const char *param);
 char *get_extension(const char *name);
-int is_regular_file(const char *path);
 void move(const char *name);
 
 int main(int argc, char *argv[])
@@ -182,11 +181,4 @@ char *strrev(char *str)
 		*p1 ^= *p2;
 	}
 	return str;
-}
-
-int is_regular_file(const char *path)
-{
-	struct stat path_stat;
-	stat(path, &path_stat);
-	return S_ISREG(path_stat.st_mode);
 }
