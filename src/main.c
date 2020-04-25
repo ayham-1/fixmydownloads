@@ -29,6 +29,7 @@ static int watch_list;
 char *strrev(char *str);
 char *get_directory(const char *param);
 char *get_extension(const char *name);
+char *pad_unique_chars(const char *str);
 void move(const char *name);
 
 int main(int argc, char *argv[])
@@ -86,7 +87,7 @@ void move(const char *name)
 	char *org = (char *)malloc(4096 * sizeof(char));
 	sprintf(org, "%s/%s/", documents_dir, ext);
 
-	/* Check if extension is not to be used */
+	/* Check if extension is ignored */
 	for (unsigned int i = 0; i < IGNORE_LIST_SIZE; i++) {
 		if (strcmp(extension_ignore_list[i], ext) == 0)
 			return;
@@ -94,19 +95,19 @@ void move(const char *name)
 
 	/* Ensure/Create directories for organization */
 	char *cmd = (char *)malloc(8096 * 2.5 * sizeof(char));
-	strcat(cmd, "mkdir --parents ");
+	strcat(cmd, "mkdir --parents \"");
 	strcat(cmd, org);
-	if (system(cmd))
-		perror("Failed to ensure/create directories!");
+	strcat(cmd, "\"\0");
+	if (system(pad_unique_chars(cmd)))
+		perror("Did not create directories, they maybe already present!");
 
 	printf("Moving: %s Extension: %s\n", name, ext);
 	memset(cmd, 0, strlen(cmd));
 	strcat(cmd, "mv ");
-	strcat(cmd, src);
+	strcat(cmd, pad_unique_chars(src));
 	strcat(cmd, " ");
-	strcat(cmd, dest);
+	strcat(cmd, pad_unique_chars(dest));
 	strcat(cmd, "\0");
-	printf("%s\n", cmd);
 	if (system(cmd))
 		perror("Failed to move file!");
 }
@@ -181,4 +182,28 @@ char *strrev(char *str)
 		*p1 ^= *p2;
 	}
 	return str;
+}
+
+char *pad_unique_chars(const char *str)
+{
+	char *result = (char *)malloc(sizeof(char));
+	int counter = 0;
+	memset(result, 0L, sizeof(char));
+	for (unsigned int i = 0; i < strlen(str); i++) {
+		if (str[i] == '(' || str[i] == ')') {
+			result = (char *)realloc(result, counter + 2);
+			result[counter++] = 92;
+			result[counter++] = str[i];
+		} else if (str[i] == ' ') {
+			result = (char *)realloc(result, counter + 2);
+			result[counter++] = 92;
+			result[counter++] = str[i];
+		} else {
+			result = (char *)realloc(result, counter + 1);
+			result[counter++] = str[i];
+		}
+	}
+	result = (char *)realloc(result, sizeof(char) * counter + 1);
+	result[counter] = '\0';
+	return result;
 }
