@@ -1,4 +1,3 @@
-/*This is the sample program to notify us for the file creation and file deletion takes place in “/tmp” directory*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -11,6 +10,9 @@
 
 #define EVENT_SIZE (sizeof(struct inotify_event))
 #define EVENT_BUF_LEN (1024 * (EVENT_SIZE + 16))
+
+static const int IGNORE_LIST_SIZE = 2;
+static const char *extension_ignore_list[] = { "crdownload\0", "test2\0" };
 
 static const char misc_dir_default[] = "misc";
 
@@ -78,13 +80,18 @@ void move(const char *name)
 {
 	/* Get all variables needed */
 	char *ext = get_extension(name);
-
 	char *dest = (char *)malloc(4096 * sizeof(char));
 	sprintf(dest, "%s/%s/%s", documents_dir, ext, name);
 	char *src = (char *)malloc(4096 * sizeof(char));
 	sprintf(src, "%s/%s", downloads_dir, name);
 	char *org = (char *)malloc(4096 * sizeof(char));
 	sprintf(org, "%s/%s/", documents_dir, ext);
+
+	/* Check if extension is not to be used */
+	for (unsigned int i = 0; i < IGNORE_LIST_SIZE; i++) {
+		if (strcmp(extension_ignore_list[i], ext) == 0)
+			return;
+	}
 
 	/* Ensure/Create directories for organization */
 	char *cmd = (char *)malloc(8096 * 2.5 * sizeof(char));
@@ -143,9 +150,9 @@ char *get_directory(const char *name)
 		}
 		strcat(result, home_dir);
 		strcat(result, "/");
-		if (strcmp(name, "DOWNLOAD"))
+		if (strcmp(name, "DOWNLOAD") == 0)
 			strcat(result, downloads_dir_default);
-		else if (strcmp(name, "DOCUMENTS"))
+		else if (strcmp(name, "DOCUMENTS") == 0)
 			strcat(result, documents_dir_default);
 	} else {
 		/* Read path from output of xdg */
