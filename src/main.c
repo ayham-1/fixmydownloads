@@ -6,10 +6,13 @@
 #include <pwd.h>
 #include <string.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <sys/inotify.h>
 
 #define EVENT_SIZE (sizeof(struct inotify_event))
 #define EVENT_BUF_LEN (1024 * (EVENT_SIZE + 16))
+
+static const char misc_dir_default[] = "misc";
 
 static const char downloads_dir_default[] = "Downloads";
 static char *downloads_dir;
@@ -24,6 +27,7 @@ static int watch_list;
 char *strrev(char *str);
 char *get_directory(const char *param);
 char *get_extension(const char *name);
+int is_regular_file(const char *path);
 void move(const char *name);
 
 int main(int argc, char *argv[])
@@ -45,6 +49,7 @@ int main(int argc, char *argv[])
 	if (!watch_list)
 		perror("Failed to add downloads folder to watchlist!");
 
+	/* Loop till we die. */
 	while (1) {
 		/* Get events*/
 		int length =
@@ -102,7 +107,8 @@ void move(const char *name)
 
 char *get_extension(const char *name)
 {
-	char *ext = (char *)malloc(sizeof(char));
+	char *ext = (char *)malloc(sizeof(misc_dir_default));
+	strcpy(ext, misc_dir_default); /* Set default misc directory */
 	int ext_len = 0;
 	for (int i = 0; i < strlen(name); i++) {
 		if (name[i] == '.') {
@@ -169,4 +175,11 @@ char *strrev(char *str)
 		*p1 ^= *p2;
 	}
 	return str;
+}
+
+int is_regular_file(const char *path)
+{
+	struct stat path_stat;
+	stat(path, &path_stat);
+	return S_ISREG(path_stat.st_mode);
 }
