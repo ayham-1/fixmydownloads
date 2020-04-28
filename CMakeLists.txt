@@ -19,14 +19,16 @@ install(TARGETS fixmydl
 
 set(CPACK_PACKAGE_VENDOR "altffour")
 set(CPACK_PACKAGE_CONTACT "ayhamaboualfadl@gmail.com")
-set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Download folder organizer")
 set(CPACK_PACKAGE_VERSION ${PROJECT_VERSION})
 set(CPACK_PACKAGE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE")
 set(CPACK_PACKAGE_FILE_README "${CMAKE_SOURCE_DIR}/README.md")
+set(CPACK_PACKAGE_DESCRIPTION "Refer to https://github.com/realaltffour/fixmydownloads/ for operation instructions.")
+set(CPACK_RPM_PACKAGE_DESCRIPTION "Refer to https://github.com/realaltffour/fixmydownloads/ for operation instructions.")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Download folder organizer")
 SET(CPACK_GENERATOR "DEB;RPM;TGZ;STGZ;TBZ2;TZ;ZIP")
 
 set(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA "${CMAKE_SOURCE_DIR}/scripts/postinst;")
-SET(CPACK_RPM_POST_INSTALL_SCRIPT_FILE "${CMAKE_SOURCE_DIR}/scripts/postinst;")
+set(CPACK_RPM_POST_INSTALL_SCRIPT_FILE "${CMAKE_SOURCE_DIR}/scripts/postinst;")
 
 include(CPack)
 
