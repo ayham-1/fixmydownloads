@@ -11,6 +11,7 @@
 #define EVENT_SIZE (sizeof(struct inotify_event))
 #define EVENT_BUF_LEN (1024 * (EVENT_SIZE + 16))
 #define PATH_BUF_LEN 4096
+#define CMD_BUF_LEN ((PATH_BUF_LEN * 2) * 1.2)
 
 static const int IGNORE_LIST_SIZE = 1;
 static const char *extension_ignore_list[] = { "crdownload" };
@@ -104,7 +105,7 @@ void move(const char *name)
 	}
 
 	/* Ensure/Create directories for organization */
-	char *cmd = (char *)malloc(8096 * 2.5 * sizeof(char));
+	char *cmd = (char *)malloc(CMD_BUF_LEN * sizeof(char));
 	strcat(cmd, "mkdir --parents \"");
 	strcat(cmd, pad_unique_chars(org));
 	strcat(cmd, "\"\0");
