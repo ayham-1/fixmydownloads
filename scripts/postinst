@@ -1,0 +1,4 @@
+echo 'Hey user!'
+echo 'Thanks for installing!'
+echo 'Run: echo 'fixmydl' >> ~/.profile'
+echo 'So that fixmydownloads starts cleaning when you login!'
