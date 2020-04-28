@@ -10,6 +10,7 @@
 
 #define EVENT_SIZE (sizeof(struct inotify_event))
 #define EVENT_BUF_LEN (1024 * (EVENT_SIZE + 16))
+#define PATH_BUF_LEN 4096
 
 static const int IGNORE_LIST_SIZE = 1;
 static const char *extension_ignore_list[] = { "crdownload" };
@@ -82,15 +83,15 @@ void move(const char *name)
 {
 	/* Get all variables needed */
 	char *ext = get_extension(name);
-	char *dest = (char *)malloc(4096 * sizeof(char));
+	char *dest = (char *)malloc(PATH_BUF_LEN * sizeof(char));
 	if (strcmp(prefix_dir, "") == 0)
 		sprintf(dest, "%s/%s/%s", documents_dir, ext, name);
 	else
 		sprintf(dest, "%s/%s/%s/%s", documents_dir, prefix_dir, ext,
 			name);
-	char *src = (char *)malloc(4096 * sizeof(char));
+	char *src = (char *)malloc(PATH_BUF_LEN * sizeof(char));
 	sprintf(src, "%s/%s", downloads_dir, name);
-	char *org = (char *)malloc(4096 * sizeof(char));
+	char *org = (char *)malloc(PATH_BUF_LEN * sizeof(char));
 	if (strcmp(prefix_dir, "") == 0)
 		sprintf(org, "%s/%s/", documents_dir, ext);
 	else
@@ -142,7 +143,7 @@ char *get_extension(const char *name)
 
 char *get_directory(const char *name)
 {
-	char *result = (char *)malloc(4096 * sizeof(char));
+	char *result = (char *)malloc(PATH_BUF_LEN * sizeof(char));
 	FILE *xdg_cmd = NULL;
 	char *cmd = (char *)malloc(20 * sizeof(char));
 	sprintf(cmd, "xdg-user-dir %s", name);
