@@ -14,7 +14,7 @@
 static const int IGNORE_LIST_SIZE = 1;
 static const char *extension_ignore_list[] = { "crdownload\0" };
 
-static const char suffix_dir[] = "orgdl";
+static const char prefix_dir[] = "orgdl";
 
 static const char misc_dir_default[] = "misc";
 
@@ -83,18 +83,18 @@ void move(const char *name)
 	/* Get all variables needed */
 	char *ext = get_extension(name);
 	char *dest = (char *)malloc(4096 * sizeof(char));
-	if (strcmp(suffix_dir, "") == 0)
+	if (strcmp(prefix_dir, "") == 0)
 		sprintf(dest, "%s/%s/%s", documents_dir, ext, name);
 	else
-		sprintf(dest, "%s/%s/%s/%s", documents_dir, suffix_dir, ext,
+		sprintf(dest, "%s/%s/%s/%s", documents_dir, prefix_dir, ext,
 			name);
 	char *src = (char *)malloc(4096 * sizeof(char));
 	sprintf(src, "%s/%s", downloads_dir, name);
 	char *org = (char *)malloc(4096 * sizeof(char));
-	if (strcmp(suffix_dir, "") == 0)
+	if (strcmp(prefix_dir, "") == 0)
 		sprintf(org, "%s/%s/", documents_dir, ext);
 	else
-		sprintf(org, "%s/%s/%s/", documents_dir, suffix_dir, ext);
+		sprintf(org, "%s/%s/%s/", documents_dir, prefix_dir, ext);
 
 	/* Check if extension is ignored */
 	for (unsigned int i = 0; i < IGNORE_LIST_SIZE; i++) {
