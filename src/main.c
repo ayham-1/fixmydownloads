@@ -14,6 +14,8 @@
 static const int IGNORE_LIST_SIZE = 1;
 static const char *extension_ignore_list[] = { "crdownload\0" };
 
+static const char suffix_dir[] = "orgdl";
+
 static const char misc_dir_default[] = "misc";
 
 static const char downloads_dir_default[] = "Downloads";
@@ -81,11 +83,18 @@ void move(const char *name)
 	/* Get all variables needed */
 	char *ext = get_extension(name);
 	char *dest = (char *)malloc(4096 * sizeof(char));
-	sprintf(dest, "%s/%s/%s", documents_dir, ext, name);
+	if (strcmp(suffix_dir, "") == 0)
+		sprintf(dest, "%s/%s/%s", documents_dir, ext, name);
+	else
+		sprintf(dest, "%s/%s/%s/%s", documents_dir, suffix_dir, ext,
+			name);
 	char *src = (char *)malloc(4096 * sizeof(char));
 	sprintf(src, "%s/%s", downloads_dir, name);
 	char *org = (char *)malloc(4096 * sizeof(char));
-	sprintf(org, "%s/%s/", documents_dir, ext);
+	if (strcmp(suffix_dir, "") == 0)
+		sprintf(org, "%s/%s/", documents_dir, ext);
+	else
+		sprintf(org, "%s/%s/%s/", documents_dir, suffix_dir, ext);
 
 	/* Check if extension is ignored */
 	for (unsigned int i = 0; i < IGNORE_LIST_SIZE; i++) {
@@ -96,9 +105,9 @@ void move(const char *name)
 	/* Ensure/Create directories for organization */
 	char *cmd = (char *)malloc(8096 * 2.5 * sizeof(char));
 	strcat(cmd, "mkdir --parents \"");
-	strcat(cmd, org);
+	strcat(cmd, pad_unique_chars(org));
 	strcat(cmd, "\"\0");
-	if (system(pad_unique_chars(cmd)))
+	if (system(cmd))
 		perror("Did not create directories, they maybe already present!");
 
 	printf("Moving: %s Extension: %s\n", name, ext);
