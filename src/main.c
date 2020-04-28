@@ -12,7 +12,7 @@
 #define EVENT_BUF_LEN (1024 * (EVENT_SIZE + 16))
 
 static const int IGNORE_LIST_SIZE = 1;
-static const char *extension_ignore_list[] = { "crdownload\0" };
+static const char *extension_ignore_list[] = { "crdownload" };
 
 static const char prefix_dir[] = "orgdl";
 
