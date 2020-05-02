@@ -3,6 +3,14 @@
 </br>
 The goal of the project is to make the simplest downloads folder organizer that is configured by code making it so small that the whole thing fits in one file! Eliminating the need to manually organize or clean up your downloads folder!
 
+## Organizing your current download directory
+To organize your current downloads directory, run after installation:
+```shell
+$ ./fixmydl all
+```
+No return means success.
+Note: that this completely cleans your downloads directory.
+
 ## Installation
 Their are multiple ways you can install it. Grab your distro's package from the release section and install it! Or wait for the project to get into your distro repositories (hopefully).
 
@@ -116,4 +124,4 @@ This project is licensed under the GPLv3 License - see the [LICENSE.md](LICENSE.
 I never found a downloads folder organizer that is so simple that you just install it and forget about it. Adding, I wanted to a project that would be [suckless-compatible](https://suckless.org/) (if that exists). It's worthy to note that I made a 5-minute research 'session' about download organizer for Linux and didn't find any. Therefore I called this project the simplest.
 
 ----------------
-README.md valid for version `1.2.2`
+README.md valid for version `1.3.0`
