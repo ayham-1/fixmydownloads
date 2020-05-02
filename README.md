@@ -104,8 +104,6 @@ This is the amount of bytes to allocate for command line buffers. It's a must fo
 
 * [C](https://en.wikipedia.org/wiki/C_programming_language) - Language used.
 * [inotify](https://en.wikipedia.org/wiki/Inotify) - Linux library used for watching files.
-* [systemD](https://en.wikipedia.org/wiki/Systemd) - *Optional* Start-up mechanism, only installed with installers.
-* [OpenRC](https://en.wikipedia.org/wiki/OpenRC) - *Optional* Start-up mechanism, only installed with installers.
 
 ## Authors
 
