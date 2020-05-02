@@ -4,6 +4,7 @@
 #include <errno.h>
 #include <pwd.h>
 #include <string.h>
+#include <dirent.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/inotify.h>
@@ -35,6 +36,7 @@ char *get_directory(const char *param);
 char *get_extension(const char *name);
 char *pad_unique_chars(const char *str);
 void move(const char *name);
+void all();
 
 int main(int argc, char *argv[])
 {
@@ -43,6 +45,11 @@ int main(int argc, char *argv[])
 
 	/* Get Documents directory Location */
 	documents_dir = get_directory("DOCUMENTS");
+
+	/* Check if all command is issued */
+	if (argc > 1)
+		if (strcmp(argv[1], "all") == 0)
+			all();
 
 	/* Initialize inotify instance */
 	inotify_instance = inotify_init();
@@ -80,8 +87,45 @@ int main(int argc, char *argv[])
 	close(inotify_instance);
 }
 
+void all()
+{
+	long long counter = 0;
+	char **directory_list = (char **)malloc(sizeof(char **));
+
+	DIR *dp;
+	struct dirent *ep;
+	dp = opendir(downloads_dir);
+
+	if (dp != NULL) {
+		while ((ep = readdir(dp))) {
+			directory_list = (char **)realloc(
+				directory_list,
+				sizeof(char **) * (counter + 1));
+			directory_list[counter] = (char *)malloc(
+				sizeof(char) * strlen(ep->d_name) + 1);
+			memcpy(directory_list[counter++], ep->d_name,
+			       sizeof(char) * strlen(ep->d_name));
+		}
+
+		closedir(dp);
+	} else
+		perror("Couldn't open downloads directory");
+
+	while (counter--)
+		move(directory_list[counter]);
+
+	free(directory_list);
+	exit(0);
+}
+
 void move(const char *name)
 {
+	/* Don't move special files */
+	if (strcmp(name, ".") == 0)
+		return;
+	if (strcmp(name, "..") == 0)
+		return;
+
 	/* Get all variables needed */
 	char *ext = get_extension(name);
 	char *dest = (char *)malloc(PATH_BUF_LEN * sizeof(char));
@@ -106,11 +150,12 @@ void move(const char *name)
 
 	/* Ensure/Create directories for organization */
 	char *cmd = (char *)malloc(CMD_BUF_LEN * sizeof(char));
+	memset(cmd, 0L, CMD_BUF_LEN * sizeof(char));
 	strcat(cmd, "mkdir --parents \"");
 	strcat(cmd, pad_unique_chars(org));
-	strcat(cmd, "\"\0");
+	strcat(cmd, "\"");
 	if (system(cmd))
-		perror("Did not create directories, they maybe already present!");
+		perror("Did not create directories, they may be already present!");
 
 	printf("Moving: %s Extension: %s\n", name, ext);
 	memset(cmd, 0, strlen(cmd));
